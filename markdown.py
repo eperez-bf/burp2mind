@@ -27,23 +27,20 @@ def build_tree(root, uri_list):
 
 def traverse_tree(node, level=0):
     result = []
-    if isinstance(node, str):
-        result.append(node)
-    elif isinstance(node, dict):
-        for name, child in node.items():
-            prefix = "  " * level
-            if level == 0:
-                prefix += "- "
-            else:
-                prefix += "+ "
-            if "value" in child:
-                result.append(prefix + name + "=" + child["value"])
-            elif "query" in child:
-                result.append(prefix + name)
-                result.extend(traverse_tree(child["query"], level+1))
-            else:
-                result.append(prefix + name)
-                result.extend(traverse_tree(child, level+1))
+    for name, child in node.items():
+        prefix = "  " * level
+        if level == 0:
+            prefix += "- "
+        else:
+            prefix += "+ "
+        if "value" in child:
+            result.append(prefix + name + "=" + child["value"])
+        elif "query" in child:
+            result.append(prefix + name)
+            result.extend(traverse_tree(child["query"], level+1))
+        else:
+            result.append(prefix + name)
+            result.extend(traverse_tree(child, level+1))
     return result
 
 def save_to_file(root, lines, filename):
@@ -67,3 +64,6 @@ if __name__ == "__main__":
     tree = build_tree(root, uri_list)
     output = traverse_tree(tree)
     save_to_file(root, output, output_file)
+    with open(input_file, "r") as f:
+        uri_list = [line.strip() for line in f]
+   
